@@ -1,0 +1,10 @@
+{
+  "name": "M-Control",
+  "short_name": "M-Control",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0b1426",
+  "theme_color": "#101d35",
+  "lang": "ar",
+  "dir": "rtl"
+}

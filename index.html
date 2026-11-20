@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101d35">
+<meta name="description" content="M-Control — واجهة عربية لربط أجهزتك بموافقة واضحة.">
+<link rel="manifest" href="manifest.webmanifest">
+<title>M-Control | التحكم الآمن</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1426;--panel:#14233d;--panel2:#1b3152;--muted:#a9bad5;--accent:#70a7ff;--line:#2b4163}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(circle at 80% 0%,#1a3155 0,transparent 36%),var(--bg);color:#f5f8ff;min-height:100vh}
+main{width:min(100% - 28px,720px);margin:0 auto;padding:24px 0 40px}
+header{display:flex;align-items:center;justify-content:space-between;margin:10px 0 26px}
+.logo{font-weight:850;font-size:24px;letter-spacing:.3px}.tag{font-size:12px;color:#a9bad5;border:1px solid var(--line);padding:7px 11px;border-radius:99px}
+.hero,.panel{background:linear-gradient(145deg,rgba(27,49,82,.96),rgba(18,34,58,.96));border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:0 18px 50px #0003}
+h1{font-size:clamp(26px,6vw,38px);margin:0 0 8px}p{color:var(--muted);line-height:1.8;margin:7px 0}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
+button,.filelabel{border:0;border-radius:14px;padding:14px 16px;font:inherit;font-weight:700;cursor:pointer;background:var(--accent);color:#08162c}
+button.secondary{background:#253d60;color:#f5f8ff;border:1px solid #3a5680}
+button:active{transform:scale(.99)}.panel{margin-top:16px;display:none}.panel.active{display:block}
+h2{font-size:21px;margin:0 0 10px}.code{font-size:clamp(30px,9vw,44px);font-weight:850;letter-spacing:5px;text-align:center;padding:16px;background:#0b172b;border:1px dashed #5878a7;border-radius:16px;margin:16px 0;font-variant-numeric:tabular-nums}
+.field{width:100%;padding:15px;border-radius:13px;border:1px solid #385477;background:#0b172b;color:white;font:inherit;font-size:18px;margin:10px 0}
+.note{font-size:13px;background:#0d1a2e;border-right:3px solid var(--accent);padding:12px;border-radius:10px;margin-top:16px}
+.status{display:inline-block;color:#b8e8c9;background:#153c32;padding:6px 10px;border-radius:99px;font-size:12px}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:18px}.tile{background:#0d1a2e;border:1px solid var(--line);border-radius:15px;padding:16px}.tile b{display:block;margin-bottom:5px}.tile span{font-size:13px;color:var(--muted)}
+input[type=file]{display:none}footer{text-align:center;color:#8195b4;font-size:12px;margin-top:24px}
+@media(max-width:430px){.actions{grid-template-columns:1fr}.hero,.panel{padding:18px}.tiles{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<main>
+<header><div class="logo">M-Control</div><div class="tag">إدارة أجهزتك بأمان</div></header>
+<section class="hero">
+  <div class="status">● واجهة تجريبية</div>
+  <h1>اتصال آمن بين هاتفين</h1>
+  <p>اختر دور هذا الهاتف. لا تتم مشاركة الشاشة أو الملفات أو الصوت إلا بموافقة واضحة من الجهاز الآخر.</p>
+  <div class="actions">
+    <button onclick="show('controller')">هذا الهاتف هو المتحكّم</button>
+    <button class="secondary" onclick="show('device')">هذا الهاتف هو الجهاز الآخر</button>
+  </div>
+  <div class="tiles">
+    <div class="tile"><b>🔢 رمز من 10 أرقام</b><span>رمز مؤقت للربط التجريبي</span></div>
+    <div class="tile"><b>📁 نقل الملفات</b><span>اختيار ومشاركة يدوية</span></div>
+    <div class="tile"><b>🖥️ مشاركة الشاشة</b><span>تتطلب موافقة المتصفح والنظام</span></div>
+    <div class="tile"><b>🛡️ الخصوصية أولاً</b><span>إيقاف المشاركة في أي وقت</span></div>
+  </div>
+</section>
+<section id="controller" class="panel">
+  <h2>وضع المتحكّم</h2>
+  <p>اكتب رمز الربط الذي يظهر على الجهاز الآخر.</p>
+  <input id="pairCode" class="field" inputmode="numeric" maxlength="10" placeholder="أدخل 10 أرقام" aria-label="رمز الربط">
+  <button onclick="checkCode()">التحقق من الرمز</button>
+  <p id="controllerMsg" class="note">التحقق هنا تجريبي داخل الصفحة فقط؛ لا يوجد اتصال فعلي بين جهازين بعد.</p>
+  <div class="actions"><button class="secondary" onclick="show('')">رجوع</button></div>
+</section>
+<section id="device" class="panel">
+  <h2>وضع الجهاز الآخر</h2>
+  <p>أنشئ رمزًا تجريبيًا وشاركه مع الهاتف الذي تريد ربطه.</p>
+  <div id="generatedCode" class="code">••••••••••</div>
+  <div class="actions">
+    <button onclick="newCode()">إنشاء رمز جديد</button>
+    <button class="secondary" onclick="copyCode()">نسخ الرمز</button>
+  </div>
+  <label class="filelabel" for="files" style="display:block;text-align:center;margin-top:12px;background:#253d60;color:white">اختيار ملفات للمشاركة</label>
+  <input id="files" type="file" multiple onchange="showFiles(this)">
+  <p id="fileInfo" class="note">اختيار الملفات لا يرسلها تلقائيًا؛ يلزم تنفيذ قناة مشاركة آمنة في إصدار لاحق.</p>
+  <div class="actions"><button class="secondary" onclick="show('')">رجوع</button></div>
+</section>
+<div class="note">مهم: هذه نسخة واجهة ويب أولية. لا تتصل الأجهزة فعليًا عبر الإنترنت، ولا تتحكم في الهاتف أو تقرأ الرسائل أو تسجل الصوت. يلزم خادم آمن وتطوير إضافي لميزة الربط بين الأجهزة.</div>
+<footer>بواسطة Mohamed Emad · M-Control</footer>
+</main>
+<script>
+let currentCode="";
+function show(id){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));if(id)document.getElementById(id).classList.add('active');window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});}
+function newCode(){currentCode=String(Math.floor(1000000000+Math.random()*9000000000));document.getElementById('generatedCode').textContent=currentCode;}
+function copyCode(){if(!currentCode)newCode();if(navigator.clipboard){navigator.clipboard.writeText(currentCode).then(()=>alert('تم نسخ الرمز'));}else{alert('رمز الربط: '+currentCode);}}
+function checkCode(){let v=document.getElementById('pairCode').value;let m=document.getElementById('controllerMsg');if(!/^\d{10}$/.test(v)){m.textContent='من فضلك أدخل 10 أرقام صحيحة.';return;}m.textContent='تم استلام الرمز شكليًا. لم يتم إنشاء اتصال حقيقي في هذه النسخة.';}
+function showFiles(el){let names=[...el.files].map(f=>f.name);document.getElementById('fileInfo').textContent=names.length?'تم اختيار: '+names.join('، ')+' — لم يتم رفعها أو إرسالها.':'لم يتم اختيار ملفات.';}
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
+</script>
+</body>
+</html>
